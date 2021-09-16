@@ -1,4 +1,5 @@
 .sidebar {
+  display: stat;
   background-color: #222831;
   width: 60px;
   height: 100vh;
@@ -96,14 +97,19 @@
         }
 
         .name {
-          margin-left: 16px;
+          width: 0%;
           color: rgba(255, 255, 255, 0);
           opacity: 0;
           font-size: 15px;
+          display: none;
+
           &.expanded {
+            display: block;
+            margin-left: 16px;
+            width: 100%;
             opacity: 1;
             color: #b1b1ca;
-            transition: opacity 1s 0.6s ease-in-out;
+            transition: display 1s 3s ease-in-out;
           }
         }
 
@@ -157,7 +163,19 @@
       padding-bottom: 10px;
       // opacity: 0;
 
-      &.fly-out {
+      .item {
+        color: #b1b1ca;
+
+        &.selected {
+          color: white;
+        }
+
+        &:hover {
+          color: white;
+        }
+      }
+
+      .flyout {
         min-width: 140px;
         background-color: #222831;
         border-radius: 0 10px 10px 0;
@@ -166,12 +184,7 @@
         left: 60px;
 
         .item {
-          margin-top: 10px;
-          margin-left: 10px;
-
-          &:hover {
-            color: #ffd369;
-          }
+          padding: 12px;
         }
         // opacity: 1;
         // transition: opacity 1s 0.2s ease-in-out;
@@ -179,17 +192,13 @@
 
       .acordian {
         white-space: nowrap;
-        margin-left: 62px;
 
         // opacity: 1;
         // transition: opacity 1s 0.2s ease-in-out;
 
         .item {
           padding-top: 10px;
-
-          &:hover {
-            color: #ffd369;
-          }
+          padding-left: 62px;
         }
       }
     }
