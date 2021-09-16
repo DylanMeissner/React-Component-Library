@@ -58,7 +58,6 @@ const determineExpanded = (expanded: boolean) => {
 const SidebarHeader = ({ logo, expanded, onExpand }: SideBarHeaderProps) => {
   return (
     <div className={`${baseClassName}__header`}>
-      {/* <p>TITLE</p> */}
       <FontAwesomeIcon
         className={`expand-icon ${determineExpanded(expanded)}`}
         icon={expanded ? faAngleDoubleLeft : faAngleDoubleRight}
@@ -67,7 +66,6 @@ const SidebarHeader = ({ logo, expanded, onExpand }: SideBarHeaderProps) => {
       <div>
         <img className={"logo"} src={`${logo}`}></img>
       </div>
-      {/* <hr className="seperator"></hr> */}
     </div>
   );
 };
@@ -125,6 +123,7 @@ const MainMenuItem = ({
 
         <p className={`name ${determineExpanded(expanded)}`}>{menuItem.name}</p>
 
+        {/* Fly out menu item component */}
         {menuItem.subMenuItems &&
           menuItem.subMenuItems.length > 0 &&
           !expanded &&
@@ -138,6 +137,8 @@ const MainMenuItem = ({
             </div>
           )}
       </div>
+
+      {/* Acordian  menu item component */}
       {menuItem.subMenuItems &&
         menuItem.subMenuItems.length > 0 &&
         expanded &&
