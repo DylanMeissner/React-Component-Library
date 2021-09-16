@@ -7,36 +7,36 @@ const isProd = process.env.NODE_ENV === "production";
 const config = {
   mode: isProd ? "production" : "development",
   entry: {
-    index: "./src/index.tsx",
+    index: "./src/index.tsx"
   },
   output: {
     path: resolve(__dirname, "dist"),
-    filename: "bundle.js",
+    filename: "bundle.js"
   },
   resolve: {
-    extensions: [".js", ".jsx", ".ts", ".tsx"],
+    extensions: [".js", ".jsx", ".ts", ".tsx"]
   },
   module: {
     rules: [
       {
         test: /\.tsx?$/,
         use: "babel-loader",
-        exclude: /node_modules/,
-      },
-    ],
+        exclude: /node_modules/
+      }
+    ]
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/index.html",
       filename: "index.html",
-      inject: "body",
-    }),
-  ],
+      inject: "body"
+    })
+  ]
 };
 
 if (isProd) {
   config.optimization = {
-    minimizer: [new TerserWebpackPlugin()],
+    minimizer: [new TerserWebpackPlugin()]
   };
 } else {
   config.devServer = {
