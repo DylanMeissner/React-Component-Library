@@ -4,7 +4,10 @@ import SideBar from ".";
 import {
   BrowserRouter as Router,
   Route,
+  useLocation
 } from "react-router-dom";
+
+
 
 export default {
   title: "Example/SideBar",
@@ -15,19 +18,21 @@ export default {
 } as ComponentMeta<typeof SideBar>;
 
 
-interface Page1Props {
-  
+interface PageProps {
+  pageUrl: string
 }
  
-const Page1: FunctionComponent<Page1Props> = () => {
-  return (<div>PAGE1</div>  );
+const Page: FunctionComponent<PageProps> = () => {
+  const location = useLocation();
+  return (<div style={{"margin": "50px"}}>{location.pathname} - page</div>  );
 };
 
 const Template: ComponentStory<typeof SideBar> = args =>  <Router>
   
+
   <div className="app" style={{display: "flex", flexDirection: "row"}}>
   <SideBar {...args} /> 
-  <Route path="/" component={Page1} />
+  <Route path="/" component={Page} />
   </div>
 
   </Router>;

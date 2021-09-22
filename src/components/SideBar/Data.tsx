@@ -2,7 +2,8 @@ import {
   faNetworkWired,
   faBullseye,
   faWifi,
-  faGlobe
+  faGlobe,
+  faHome
 } from "@fortawesome/free-solid-svg-icons";
 import { IconDefinition, IconProp } from "@fortawesome/fontawesome-svg-core";
 
@@ -22,9 +23,18 @@ export interface MainMenuItem {
 }
 
 export interface MenuSection {
-  name: string;
+  name?: string;
   menuItems: MainMenuItem[];
 }
+
+const uncategorisedItems: MainMenuItem[] = [
+  {
+    label: "Dashboard",
+    icon: faHome,
+    subMenuItems: undefined,
+    linkTo: "/dashboard"
+  },
+];
 
 const networkMenuItems: MainMenuItem[] = [
   {
@@ -93,6 +103,9 @@ const otherSerciceMenuItems: MainMenuItem[] = [
 ];
 
 export const  MenuSections: MenuSection[] = [
+  {
+    menuItems: uncategorisedItems
+  },
   {
     name: "Network",
     menuItems: networkMenuItems

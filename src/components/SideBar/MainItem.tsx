@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { determineExpanded } from ".";
 import { MainMenuItem, SubMenuItem } from "./Data";
 import { useHistory, useLocation } from 'react-router-dom';
-import { isNil } from 'lodash';
 
 export interface SelectedOption {
   selectedMenuOption: string;
@@ -13,7 +12,7 @@ export interface SelectedOption {
 }
 
 interface MainItemProps {
-  sectionName: string;
+  sectionName?: string;
   expanded: boolean;
   menuItem: MainMenuItem;
   currentSelection: SelectedOption;
@@ -68,35 +67,23 @@ const MainItem = ({
     setSubMenuOpen(currentSelection.selectedMenuOption === menuItem.label)
   }, [currentSelection]);
 
-  /**
-   * Effect to ensure that the currently selected option is correctly hilighted
-   * when the expanded state is changed.
-   */
-  useEffect(() => {
-    const subMenuCurrentlyLinked = menuItem.subMenuItems?.find(i => i.linkTo === location.pathname);
-    const isMenuPageOpen = (menuItem.linkTo === location.pathname || !isNil(subMenuCurrentlyLinked));
-
-    if(isMenuPageOpen) {
-      onChangeSelected({selectedMenuOption: menuItem.label, selectedSubMenuOption: subMenuCurrentlyLinked?.label || ''})
+  const handleMainItemClicked = () => {
+    if(menuItem.linkTo){
+      onChangeSelected({selectedMenuOption: menuItem.label, selectedSubMenuOption: ''});
+      history.push(menuItem.linkTo)
     }
-    
-    setSubMenuOpen(isMenuPageOpen);
-  }, [expanded]);
-
+    else if(!expanded && menuItem.subMenuItems && menuItem.subMenuItems[0]) {
+      onChangeSelected({selectedMenuOption: menuItem.label, selectedSubMenuOption: menuItem.subMenuItems[0].label});
+      history.push(menuItem.subMenuItems[0].linkTo);
+    }
+  }
 
   return (
     <>
       <div
-        className={`main-menu-item ${subMenuOpen ? "selected" : ""}`}
-        onClick={() => {
-            if(menuItem.linkTo){
-              onChangeSelected({selectedMenuOption: menuItem.label, selectedSubMenuOption: ''})
-            }
-            
-            if(menuItem.linkTo) {
-              history.push(menuItem.linkTo);
-            }
-        }}
+        // className={`main-menu-item ${subMenuOpen ? "selected" : ""}`}
+        className={`main-menu-item`}
+        onClick={handleMainItemClicked}
         onMouseOver={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
