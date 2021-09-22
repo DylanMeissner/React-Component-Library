@@ -2,8 +2,8 @@ import { useState } from "react";
 import  React, {useEffect} from "react";
 import "./styles.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { determineExpanded } from "./SideBar";
-import { MainMenuItem, SubMenuItem } from "./Menu-Data";
+import { determineExpanded } from ".";
+import { MainMenuItem, SubMenuItem } from "./Data";
 import { useHistory, useLocation } from 'react-router-dom';
 import { isNil } from 'lodash';
 
@@ -12,8 +12,8 @@ export interface SelectedOption {
   selectedSubMenuOption?: string;
 }
 
-interface MenuItemProps {
-  categoryName: string;
+interface MainItemProps {
+  sectionName: string;
   expanded: boolean;
   menuItem: MainMenuItem;
   currentSelection: SelectedOption;
@@ -37,10 +37,10 @@ const SubMenuItems = ({type, subMenuItems, currentSelection, handleClick}: SubMe
     <div className={"submenu-container"}>
     <div className={`${type}`}>
       {subMenuItems.map((sub, i) => (
-        <div key={i} className={`item ${currentSelection.selectedSubMenuOption === sub.name ? "selected" : ""}`} onClick={(e) => { 
+        <div key={i} className={`item ${currentSelection.selectedSubMenuOption === sub.label ? "selected" : ""}`} onClick={(e) => { 
           e.stopPropagation();
-          handleClick(sub.name, sub.linkTo)}}>
-          {sub.name}
+          handleClick(sub.label, sub.linkTo)}}>
+          {sub.label}
         </div>
       ))}
     </div>
@@ -48,14 +48,14 @@ const SubMenuItems = ({type, subMenuItems, currentSelection, handleClick}: SubMe
   )
 }
 
-const MenuItem = ({
-  categoryName,
+const MainItem = ({
+  sectionName,
   expanded,
   menuItem,
   currentSelection,
   onChangeSelected
-}: MenuItemProps) => {
-  const [subMenuOpen, setSubMenuOpen] = useState(currentSelection.selectedMenuOption === menuItem.name);
+}: MainItemProps) => {
+  const [subMenuOpen, setSubMenuOpen] = useState(currentSelection.selectedMenuOption === menuItem.label);
   const [hovered, setHovered] = useState(false);
   const history = useHistory();
   const location = useLocation();
@@ -65,7 +65,7 @@ const MenuItem = ({
    * is opened when the current selection changes
    */
   useEffect(() => {
-    setSubMenuOpen(currentSelection.selectedMenuOption === menuItem.name)
+    setSubMenuOpen(currentSelection.selectedMenuOption === menuItem.label)
   }, [currentSelection]);
 
   /**
@@ -77,7 +77,7 @@ const MenuItem = ({
     const isMenuPageOpen = (menuItem.linkTo === location.pathname || !isNil(subMenuCurrentlyLinked));
 
     if(isMenuPageOpen) {
-      onChangeSelected({selectedMenuOption: menuItem.name, selectedSubMenuOption: subMenuCurrentlyLinked?.name || ''})
+      onChangeSelected({selectedMenuOption: menuItem.label, selectedSubMenuOption: subMenuCurrentlyLinked?.label || ''})
     }
     
     setSubMenuOpen(isMenuPageOpen);
@@ -90,7 +90,7 @@ const MenuItem = ({
         className={`main-menu-item ${subMenuOpen ? "selected" : ""}`}
         onClick={() => {
             if(menuItem.linkTo){
-              onChangeSelected({selectedMenuOption: menuItem.name, selectedSubMenuOption: ''})
+              onChangeSelected({selectedMenuOption: menuItem.label, selectedSubMenuOption: ''})
             }
             
             if(menuItem.linkTo) {
@@ -102,7 +102,7 @@ const MenuItem = ({
       >
         <FontAwesomeIcon className={`icon`} icon={menuItem.icon} />
 
-        <div className={`name ${determineExpanded(expanded)}`} onMouseEnter={(e) => e.preventDefault()}>{menuItem.name}</div>
+        <div className={`name ${determineExpanded(expanded)}`} onMouseEnter={(e) => e.preventDefault()}>{menuItem.label}</div>
 
         {/* Fly out sub-menu item component */}
         {menuItem.subMenuItems &&
@@ -114,7 +114,7 @@ const MenuItem = ({
             subMenuItems={menuItem.subMenuItems}
             currentSelection={currentSelection}
             handleClick={(subMenuItemName, linkTo) => {
-              onChangeSelected({selectedMenuOption: menuItem.name, selectedSubMenuOption: subMenuItemName})
+              onChangeSelected({selectedMenuOption: menuItem.label, selectedSubMenuOption: subMenuItemName})
               history.push(linkTo);
               }}
             ></SubMenuItems>
@@ -132,7 +132,7 @@ const MenuItem = ({
           subMenuItems={menuItem.subMenuItems}
           currentSelection={currentSelection}
           handleClick={(subMenuItemName, linkTo) => {
-            onChangeSelected({selectedMenuOption: menuItem.name, selectedSubMenuOption: subMenuItemName})
+            onChangeSelected({selectedMenuOption: menuItem.label, selectedSubMenuOption: subMenuItemName})
             history.push(linkTo);
            }}
           ></SubMenuItems>
@@ -141,4 +141,4 @@ const MenuItem = ({
   );
 };
 
-export default MenuItem;
+export default MainItem;

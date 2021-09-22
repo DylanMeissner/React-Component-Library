@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import SideBar from "./SideBar";
+import SideBar from ".";
 import {
   BrowserRouter as Router,
   Route,

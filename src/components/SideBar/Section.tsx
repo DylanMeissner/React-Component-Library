@@ -1,53 +1,54 @@
 
 import * as React from "react";
-import MenuItem, { SelectedOption } from "./MainMenuItem";
-import { Category } from "./Menu-Data";
+import { SelectedOption } from "./MainItem";
+import Menu from "./Menu";
+import { MenuSection } from "./Data";
 
-import { determineExpanded } from "./SideBar";
+import { determineExpanded } from ".";
 import "./styles.scss";
 
-interface CategoryItemProps {
+interface MenuSectionProps {
   expanded: boolean;
-  category: Category;
+  section: MenuSection;
   currentSelection: SelectedOption;
   onChangeSelected: (selectedOption: SelectedOption) => void;
 }
 
 /**
- * Renders a category item of the menu as well each of it's respective menu items.
+ * Renders a menu section as well each of it's respective menu items.
  * 
  * @param expanded whether the menu item is expanded or not
- * @param category the category item to render 
- * @returns categories and their menu items to be rendered.
+ * @param section the section item to render 
+ * @returns the section and it's menu items to be rendered.
  */
-const CategoryItem = ({
+const Section = ({
   expanded,
-  category,
+  section,
   currentSelection,
   onChangeSelected,
-}: CategoryItemProps) => {
+}: MenuSectionProps) => {
   return (
-    <div className={`category-container`}>
+    <div className={`section-container`}>
       <div className="title-container">
         <div className={`title ${determineExpanded(expanded)}`}>
-          {expanded ? category.name : ""}
+          {expanded ? section.name : ""}
         </div>
         <div className={`seperator ${determineExpanded(expanded)}`}></div>
       </div>
 
-      {category.menuItems.map((menuItem, i) => (
+      {section.menuItems.map((menuItem, i) => (
         /* Render each menu item  */
-        <MenuItem
+        <Menu.MainItem
           key={i}
           expanded={expanded}
           menuItem={menuItem}
-          categoryName={category.name}
+          sectionName={section.name}
           currentSelection={currentSelection}
           onChangeSelected={onChangeSelected}
-        ></MenuItem>
+        ></Menu.MainItem>
       ))}
     </div>
   );
 };
 
-export default CategoryItem;
+export default Section;

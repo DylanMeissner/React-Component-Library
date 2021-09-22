@@ -7,9 +7,9 @@ import {
   faAngleDoubleLeft,
 } from "@fortawesome/free-solid-svg-icons";
 
-import CategoryItem from "./CategoryMenuItem";
-import { Category, MenuCategories } from "./Menu-Data";
-import { SelectedOption } from "./MainMenuItem";
+import { MenuSection, MenuSections } from "./Data";
+import { SelectedOption } from "./MainItem";
+import Menu from "./Menu";
 
 export const baseClassName = "sidebar";
 
@@ -19,10 +19,9 @@ interface SideBarHeaderProps {
   onExpand: () => void;
 }
 
-
 interface SideBarContentProps {
   expanded: boolean;
-  categories: Category[];
+  sections: MenuSection[];
 }
 
 // TODO: This is not so great, refactor this
@@ -48,7 +47,7 @@ const SidebarHeader = ({ logo, expanded, onExpand }: SideBarHeaderProps) => {
 
 const SideBarContent = ({
   expanded,
-  categories,
+  sections,
 }: SideBarContentProps) => {
   const [currentlySelected, setCurrentlySelected] = useState<SelectedOption>({selectedMenuOption: "", selectedSubMenuOption: ""} );
 
@@ -58,15 +57,15 @@ const SideBarContent = ({
 
   return (
     <div className={`${baseClassName}__content`}>
-      {/* Render each category item  */}
-      {categories.map((category, i) => (
-        <CategoryItem
+      {/* Render each section item  */}
+      {sections.map((section, i) => (
+        <Menu.Section
           key={i}
           expanded={expanded}
-          category={category}
+          section={section}
           currentSelection={currentlySelected}
           onChangeSelected={handleChangeSelection}
-        ></CategoryItem>
+        ></Menu.Section>
       ))}
     </div>
   );
@@ -75,7 +74,7 @@ const SideBarContent = ({
 const SideBar: React.FunctionComponent = () => {
   const [expanded, setExpanded] = useState(false);
 
-  const finalMenuCategories = MenuCategories; //TODO filter out the unavailable items here before passing them below.
+  const finalMenuSections = MenuSections; //TODO filter out the unavailable items here before passing them below.
 
   return (
     <div
@@ -88,7 +87,7 @@ const SideBar: React.FunctionComponent = () => {
       ></SidebarHeader>
       <SideBarContent
         expanded={expanded}
-        categories={finalMenuCategories}
+        sections={finalMenuSections}
       ></SideBarContent>
     </div>
   );

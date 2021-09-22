@@ -9,52 +9,52 @@ import { IconDefinition, IconProp } from "@fortawesome/fontawesome-svg-core";
 
 
 export interface SubMenuItem {
-  name: string;
+  label: string;
   linkTo: string;
   icon?: IconProp;
 }
 
 export interface MainMenuItem {
-  name: string;
+  label: string;
   subMenuItems?: SubMenuItem[];
   linkTo?: string;
   icon: IconDefinition;
 }
 
-export interface Category {
+export interface MenuSection {
   name: string;
   menuItems: MainMenuItem[];
 }
 
 const networkMenuItems: MainMenuItem[] = [
   {
-    name: "Ports",
+    label: "Ports",
     icon: faBullseye,
     subMenuItems: [
       {
-        name: "Order Port",
+        label: "Order Port",
         linkTo: "/ports/order"
       },
       {
-        name: "View Ports",
+        label: "View Ports",
         linkTo: "/ports/list"
       }
     ]
   },
   {
-    name: "Connections",
+    label: "Connections",
     icon: faNetworkWired,
     subMenuItems: [
       {
-        name: "Create Connection",
+        label: "Create Connection",
         linkTo: "/connetcion/create"
       },
       {
-        name: "View Connections",
+        label: "View Connections",
         linkTo: "/connetcion/list"
       },
       {
-        name: "Cloud Connections",
+        label: "Cloud Connections",
         linkTo: "/connetcion/cloud"
       }
     ]
@@ -63,36 +63,36 @@ const networkMenuItems: MainMenuItem[] = [
 
 const otherSerciceMenuItems: MainMenuItem[] = [
   {
-    name: "IOD",
+    label: "IOD",
     icon: faGlobe,
     subMenuItems: [
       {
-        name: "Create IOD",
+        label: "Create IOD",
         linkTo: "/iod/create"
       },
       {
-        name: "View IOD",
+        label: "View IOD",
         linkTo: "/iod/list"
       }
     ]
   },
   {
-    name: "L3 - VPN",
+    label: "L3 - VPN",
     icon: faWifi,
     subMenuItems: [
       {
-        name: "Order VPN",
+        label: "Order VPN",
         linkTo: "/l3vpn/order"
       },
       {
-        name: "View VPN",
+        label: "View VPN",
         linkTo: "/vpn/list"
       }
     ]
   }
 ];
 
-export const  MenuCategories: Category[] = [
+export const  MenuSections: MenuSection[] = [
   {
     name: "Network",
     menuItems: networkMenuItems
