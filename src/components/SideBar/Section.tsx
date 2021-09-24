@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { SelectedOption } from "./MainItem";
 import Menu from "./Menu";
@@ -16,9 +15,9 @@ interface MenuSectionProps {
 
 /**
  * Renders a menu section as well each of it's respective menu items.
- * 
+ *
  * @param expanded whether the menu item is expanded or not
- * @param section the section item to render 
+ * @param section the section item to render
  * @returns the section and it's menu items to be rendered.
  */
 const Section = ({
@@ -29,12 +28,14 @@ const Section = ({
 }: MenuSectionProps) => {
   return (
     <div className={`section-container`}>
-      <div className="title-container">
-        <div className={`title ${determineExpanded(expanded)}`}>
-          {expanded ? section.name : ""}
+      {section.name && (
+        <div className="title-container">
+          <div className={`title ${determineExpanded(expanded)}`}>
+            {expanded ? section.name : ""}
+          </div>
+          <div className={`seperator ${determineExpanded(expanded)}`}></div>
         </div>
-        <div className={`seperator ${determineExpanded(expanded)}`}></div>
-      </div>
+      )}
 
       {section.menuItems.map((menuItem, i) => (
         /* Render each menu item  */

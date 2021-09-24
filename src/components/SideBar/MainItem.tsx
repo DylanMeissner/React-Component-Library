@@ -1,11 +1,10 @@
 import { useState } from "react";
-import  React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import "./styles.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { determineExpanded } from ".";
 import { MainMenuItem, SubMenuItem } from "./Data";
-import { useHistory, useLocation } from 'react-router-dom';
-
+import _ from "lodash";
 export interface SelectedOption {
   selectedMenuOption: string;
   selectedSubMenuOption?: string;
@@ -20,63 +19,92 @@ interface MainItemProps {
 }
 
 enum SubMenuType {
- FLY_OUT = "flyout",
- ACORDIAN = "acordian"
+  FLY_OUT = "flyout",
+  ACORDIAN = "acordian",
 }
 
 interface SubMenuItemProps {
-  type: SubMenuType, 
-  subMenuItems: SubMenuItem[], 
+  type: SubMenuType;
+  subMenuItems: SubMenuItem[];
   currentSelection: SelectedOption;
-  handleClick:  (subMenuItemName: string, linkTo: string) => void
+  handleClick: (subMenuItem: SubMenuItem) => void;
 }
 
-const SubMenuItems = ({type, subMenuItems, currentSelection, handleClick}: SubMenuItemProps) => {
+const SubMenuItems = ({
+  type,
+  subMenuItems,
+  currentSelection,
+  handleClick,
+}: SubMenuItemProps) => {
   return (
     <div className={"submenu-container"}>
-    <div className={`${type}`}>
-      {subMenuItems.map((sub, i) => (
-        <div key={i} className={`item ${currentSelection.selectedSubMenuOption === sub.label ? "selected" : ""}`} onClick={(e) => { 
-          e.stopPropagation();
-          handleClick(sub.label, sub.linkTo)}}>
-          {sub.label}
-        </div>
-      ))}
+      <div className={`${type}`}>
+        {subMenuItems.map((sub, i) => (
+          <div
+            key={i}
+            className={`item ${
+              currentSelection.selectedSubMenuOption === sub.label
+                ? "selected"
+                : ""
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClick(sub);
+            }}
+          >
+            {sub.label}
+          </div>
+        ))}
+      </div>
     </div>
-  </div>
-  )
-}
+  );
+};
 
 const MainItem = ({
   sectionName,
   expanded,
   menuItem,
   currentSelection,
-  onChangeSelected
+  onChangeSelected,
 }: MainItemProps) => {
-  const [subMenuOpen, setSubMenuOpen] = useState(currentSelection.selectedMenuOption === menuItem.label);
+  const [subMenuOpen, setSubMenuOpen] = useState(
+    currentSelection.selectedMenuOption === menuItem.label
+  );
   const [hovered, setHovered] = useState(false);
-  const history = useHistory();
-  const location = useLocation();
 
   /**
-   * Effect to ensure that the correct menu option 
+   * Effect to ensure that the correct menu option
    * is opened when the current selection changes
    */
   useEffect(() => {
-    setSubMenuOpen(currentSelection.selectedMenuOption === menuItem.label)
+    setSubMenuOpen(currentSelection.selectedMenuOption === menuItem.label);
   }, [currentSelection]);
 
   const handleMainItemClicked = () => {
-    if(menuItem.linkTo){
-      onChangeSelected({selectedMenuOption: menuItem.label, selectedSubMenuOption: ''});
-      history.push(menuItem.linkTo)
+    // Trigger the main menu items onCLick event if it has one
+    if (!_.isNil(menuItem.onClick)) {
+      onChangeSelected({
+        selectedMenuOption: menuItem.label,
+        selectedSubMenuOption: "",
+      });
+      menuItem.onClick();
     }
-    else if(!expanded && menuItem.subMenuItems && menuItem.subMenuItems[0]) {
-      onChangeSelected({selectedMenuOption: menuItem.label, selectedSubMenuOption: menuItem.subMenuItems[0].label});
-      history.push(menuItem.subMenuItems[0].linkTo);
+    // if the menu is collapsed and the menu item has sub-menu items then trigger the onClick of the first sub-menu item.
+    else if (!expanded && menuItem.subMenuItems && menuItem.subMenuItems[0]) {
+      onChangeSelected({
+        selectedMenuOption: menuItem.label,
+        selectedSubMenuOption: menuItem.subMenuItems[0].label,
+      });
+      menuItem.subMenuItems[0].onClick();
     }
-  }
+    // if the menu is expanded then simply open up the sub-menu options
+    else if (expanded) {
+      onChangeSelected({
+        selectedMenuOption: menuItem.label,
+        selectedSubMenuOption: "",
+      });
+    }
+  };
 
   return (
     <>
@@ -89,7 +117,12 @@ const MainItem = ({
       >
         <FontAwesomeIcon className={`icon`} icon={menuItem.icon} />
 
-        <div className={`name ${determineExpanded(expanded)}`} onMouseEnter={(e) => e.preventDefault()}>{menuItem.label}</div>
+        <div
+          className={`name ${determineExpanded(expanded)}`}
+          onMouseEnter={(e) => e.preventDefault()}
+        >
+          {menuItem.label}
+        </div>
 
         {/* Fly out sub-menu item component */}
         {menuItem.subMenuItems &&
@@ -97,12 +130,15 @@ const MainItem = ({
           !expanded &&
           hovered && (
             <SubMenuItems
-            type={SubMenuType.FLY_OUT}
-            subMenuItems={menuItem.subMenuItems}
-            currentSelection={currentSelection}
-            handleClick={(subMenuItemName, linkTo) => {
-              onChangeSelected({selectedMenuOption: menuItem.label, selectedSubMenuOption: subMenuItemName})
-              history.push(linkTo);
+              type={SubMenuType.FLY_OUT}
+              subMenuItems={menuItem.subMenuItems}
+              currentSelection={currentSelection}
+              handleClick={(subMenuItem) => {
+                onChangeSelected({
+                  selectedMenuOption: menuItem.label,
+                  selectedSubMenuOption: subMenuItem.label,
+                });
+                subMenuItem.onClick();
               }}
             ></SubMenuItems>
           )}
@@ -112,16 +148,18 @@ const MainItem = ({
       {menuItem.subMenuItems &&
         menuItem.subMenuItems.length > 0 &&
         expanded &&
-        subMenuOpen &&
-         (
+        subMenuOpen && (
           <SubMenuItems
-          type={SubMenuType.ACORDIAN}
-          subMenuItems={menuItem.subMenuItems}
-          currentSelection={currentSelection}
-          handleClick={(subMenuItemName, linkTo) => {
-            onChangeSelected({selectedMenuOption: menuItem.label, selectedSubMenuOption: subMenuItemName})
-            history.push(linkTo);
-           }}
+            type={SubMenuType.ACORDIAN}
+            subMenuItems={menuItem.subMenuItems}
+            currentSelection={currentSelection}
+            handleClick={(subMenuItem) => {
+              onChangeSelected({
+                selectedMenuOption: menuItem.label,
+                selectedSubMenuOption: subMenuItem.label,
+              });
+              subMenuItem.onClick();
+            }}
           ></SubMenuItems>
         )}
     </>
